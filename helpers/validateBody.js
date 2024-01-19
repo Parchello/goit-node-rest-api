@@ -1,4 +1,6 @@
-import { HttpError } from "./HttpError.js";
+const joi = require("joi");
+
+const HttpError = require("./HttpError.js");
 
 const validateBody = (schema) => {
   const func = (req, _, next) => {
@@ -12,4 +14,16 @@ const validateBody = (schema) => {
   return func;
 };
 
-export default validateBody;
+const contactsSheme = joi.object({
+  name: joi.string().required(),
+  email: joi.string().required().email(),
+  phone: joi.string().required(),
+});
+
+const contactUpdateShema = joi.object({
+  name: joi.string().min(1).optional(),
+  email: joi.string().min(1).optional().email(),
+  phone: joi.string().min(1).optional(),
+});
+
+module.exports = { validateBody, contactsSheme, contactUpdateShema };
