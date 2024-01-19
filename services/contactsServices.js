@@ -26,7 +26,7 @@ const removeContact = async (contactId) => {
   return result;
 };
 
-const addContact = async (name, email, phone) => {
+const addContact = async ({ name, email, phone }) => {
   const contacts = await listContacts();
   const newContact = {
     id: nanoid(),
@@ -39,4 +39,22 @@ const addContact = async (name, email, phone) => {
   return newContact;
 };
 
-module.exports = { listContacts, getContactId, addContact, removeContact };
+const updateById = async ({ id, name, email, phone }) => {
+  console.log("!!!", { id, name, email, phone });
+  const contacts = await listContacts();
+  const index = contacts.findIndex((item) => item.id === id);
+  if (index === -1) {
+    return null;
+  }
+  contacts[index] = { id, name, email, phone };
+  await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
+  return contacts[index];
+};
+
+module.exports = {
+  listContacts,
+  getContactId,
+  addContact,
+  removeContact,
+  updateById,
+};
