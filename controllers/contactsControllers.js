@@ -2,7 +2,7 @@ const HttpError = require("../helpers/HttpError.js");
 const {
   contactsSheme,
   contactUpdateShema,
-} = require("../helpers/validateBody.js");
+} = require("../schemas/contactsSchemas.js");
 const contactsService = require("../services/contactsServices.js");
 
 const getAllContacts = async (req, res) => {
