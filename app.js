@@ -2,22 +2,21 @@ const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
 const app = express();
-
+const dotenv = require("dotenv");
 const contactsRouter = require("./routes/contactsRouter.js");
 
 app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.json());
 const mongoose = require("mongoose");
+dotenv.config();
 
-const DB_HOST =
-  "mongodb+srv://Parchello:s3g2_QJQcDZFaG*@cluster0.qm3m9ur.mongodb.net/contacts_reader?retryWrites=true&w=majority";
-
+const { DB_HOST, PORT } = process.env;
 mongoose.set("strictQuery", true);
 mongoose
   .connect(DB_HOST)
   .then(() => {
-    app.listen(3000);
+    app.listen(PORT);
     console.log("Database connect success");
   })
   .catch((err) => {
