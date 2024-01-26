@@ -1,14 +1,29 @@
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
+const app = express();
 
 const contactsRouter = require("./routes/contactsRouter.js");
-
-const app = express();
 
 app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.json());
+const mongoose = require("mongoose");
+
+const DB_HOST =
+  "mongodb+srv://Parchello:s3g2_QJQcDZFaG*@cluster0.qm3m9ur.mongodb.net/contacts_reader?retryWrites=true&w=majority";
+
+mongoose.set("strictQuery", true);
+mongoose
+  .connect(DB_HOST)
+  .then(() => {
+    app.listen(3000);
+    console.log("Database connect success");
+  })
+  .catch((err) => {
+    console.log(err.message);
+    process.exit(1);
+  });
 
 app.use("/api/contacts", contactsRouter);
 
@@ -21,6 +36,6 @@ app.use((err, req, res, next) => {
   res.status(status).json({ message });
 });
 
-app.listen(3000, () => {
-  console.log("Server is running. Use our API on port: 3000");
-});
+// app.listen(3000, () => {
+//   console.log("Server is running. Use our API on port: 3000");
+// });
