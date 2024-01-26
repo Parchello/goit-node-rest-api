@@ -5,7 +5,6 @@ const {
   updateFavoriteSchema,
   Contact,
 } = require("../schemas/contactsSchemas.js");
-const contactsService = require("../services/contactsServices.js");
 
 const getAllContacts = async (req, res) => {
   const result = await Contact.find();
