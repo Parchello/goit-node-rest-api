@@ -3,11 +3,15 @@ const morgan = require("morgan");
 const cors = require("cors");
 const app = express();
 const dotenv = require("dotenv");
+const bcrypt = require("bcrypt");
+
+const authRouter = require("./routes/authRouter.js");
 const contactsRouter = require("./routes/contactsRouter.js");
 
 app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.json());
+
 const mongoose = require("mongoose");
 dotenv.config();
 
@@ -24,6 +28,7 @@ mongoose
     process.exit(1);
   });
 
+app.use("/api/auth", authRouter);
 app.use("/api/contacts", contactsRouter);
 
 app.use((_, res) => {
