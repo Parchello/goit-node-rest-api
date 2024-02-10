@@ -1,12 +1,19 @@
 const joi = require("joi");
 const { Schema, model } = require("mongoose");
 
-const constactShema = new Schema({
-  name: { type: String, required: true },
-  email: String,
-  phone: String,
-  favorite: { type: Boolean, default: false },
-});
+const constactShema = new Schema(
+  {
+    name: { type: String, required: true },
+    email: String,
+    phone: String,
+    favorite: { type: Boolean, default: false },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+    },
+  },
+  { versionKey: false }
+);
 
 const Contact = model("contact", constactShema);
 

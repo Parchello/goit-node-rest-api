@@ -7,14 +7,24 @@ const {
 } = require("../schemas/contactsSchemas.js");
 
 const getAllContacts = async (req, res) => {
-  const result = await Contact.find();
+  const { _id: owner } = req.user;
+  const { page = 1, limit = 20 } = req.query;
+  const skip = (page - 1) * limit;
+  const result = await Contact.find({ owner }, "", {
+    skip,
+    limit,
+  }).populate("owner", "name email");
   res.json(result);
 };
 
 const getContactById = async (req, res, next) => {
   try {
+    const { _id } = req.user;
     const { id } = req.params;
-    const result = await Contact.findById(id);
+    const result = await Contact.findOne({
+      _id: id,
+      owner: _id,
+    });
     if (!result) {
       return res.status(404).json({ message: "Contact is not found" });
     }
@@ -26,8 +36,12 @@ const getContactById = async (req, res, next) => {
 
 const deleteContact = async (req, res, next) => {
   try {
+    const { _id } = req.user;
     const { id } = req.params;
-    const result = await Contact.findByIdAndDelete(id);
+    const result = await Contact.findOneAndDelete({
+      _id: id,
+      owner: _id,
+    });
     if (!result) {
       return res.status(404).json({ message: "Contact is not found" });
     }
@@ -43,7 +57,8 @@ const createContact = async (req, res, next) => {
     if (error) {
       throw HttpError(400, error.message);
     }
-    const result = await Contact.create(req.body);
+    const { _id: owner } = req.user;
+    const result = await Contact.create({ ...req.body, owner });
     res.status(201).json(result);
     console.log(result);
   } catch (error) {
@@ -57,8 +72,13 @@ const updateContact = async (req, res, next) => {
     if (error) {
       throw HttpError(400, error.message);
     }
+    const { _id } = req.user;
     const { id } = req.params;
-    const result = await Contact.findByIdAndUpdate(id, req.body, { new: true });
+    const result = await Contact.findOneAndUpdate(
+      { _id: id, owner: _id },
+      req.body,
+      { new: true }
+    );
     if (!result) {
       return res.status(404).json({ message: "Contact is not found" });
     }
