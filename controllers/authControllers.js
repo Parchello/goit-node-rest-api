@@ -11,6 +11,7 @@ const gravatar = require("gravatar");
 dotenv.config();
 const HttpError = require("../helpers/HttpError.js");
 const path = require("path");
+const fs = require("fs/promises");
 
 const { SECRET_KEY } = process.env;
 
