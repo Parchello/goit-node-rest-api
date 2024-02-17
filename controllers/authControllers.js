@@ -83,7 +83,7 @@ const logout = async (req, res) => {
   res.status(204).json({ message: "Loggout success" });
 };
 
-const updateAvatar = async (req, res) => {
+const updateAvatar = async (req, res, next) => {
   try {
     if (!req.file) {
       throw HttpError(400, "File not provided");
