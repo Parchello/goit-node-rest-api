@@ -84,18 +84,22 @@ const logout = async (req, res) => {
 };
 
 const updateAvatar = async (req, res) => {
-  if (!req.file) {
-    throw HttpError(400, "File not provided");
-  }
-  const { _id } = req.user;
-  const { path: tempUpload, originalname } = req.file;
-  const filename = `${_id}_${originalname}`;
-  const resultUpload = path.join(avatarsDir, filename);
-  await fs.rename(tempUpload, resultUpload);
-  const avatarURL = path.join("avatars", filename);
-  await User.findByIdAndUpdate(_id, { avatarURL });
+  try {
+    if (!req.file) {
+      throw HttpError(400, "File not provided");
+    }
+    const { _id } = req.user;
+    const { path: tempUpload, originalname } = req.file;
+    const filename = `${_id}_${originalname}`;
+    const resultUpload = path.join(avatarsDir, filename);
+    await fs.rename(tempUpload, resultUpload);
+    const avatarURL = path.join("avatars", filename);
+    await User.findByIdAndUpdate(_id, { avatarURL });
 
-  res.json({ avatarURL });
+    res.json({ avatarURL });
+  } catch (error) {
+    next(error);
+  }
 };
 
 module.exports = {
